@@ -13,8 +13,12 @@ const ulEl = document.querySelector('.country-list');
 inputEl.addEventListener('input', debounce(responseProcessing, DEBOUNCE_DELAY));
 
 function responseProcessing(e) {
+  let country = e.target.value.trim();
+  if (country.length === 0) {
+    return;
+  }
   
-  fetchCountries(e).then(data => {
+  fetchCountries(country).then(data => {
     console.log(data);
 
     inputSpecificName(data);
