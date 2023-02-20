@@ -2,6 +2,7 @@ import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
+console.log('AAADD');
 const DEBOUNCE_DELAY = 600;
 
 const inputEl = document.querySelector('#search-box');
