@@ -1,6 +1,8 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
+import { fetchCountries } from './fetchCountries';
+
 
 console.log('AAADD');
 const DEBOUNCE_DELAY = 300;
@@ -8,27 +10,17 @@ const DEBOUNCE_DELAY = 300;
 const inputEl = document.querySelector('#search-box');
 const ulEl = document.querySelector('.country-list');
 
-inputEl.addEventListener('input', debounce(fetchCountries, DEBOUNCE_DELAY));
+inputEl.addEventListener('input', debounce(responseProcessing, DEBOUNCE_DELAY));
 
-function fetchCountries(e) {
-  let country = e.target.value;
-  const url = `https://restcountries.com/v3.1/name/${country}?fields=name,capital,population,flags,languages`;
+function responseProcessing(e) {
+  
+  fetchCountries(e).then(data => {
+    console.log(data);
 
-  fetch(url)
-    .then(r => {
-      if (!r.ok) {
-        throw new Error();
-      }
-      return r.json();
-    })
-    .then(data => {
-      console.log(data);
-
-      inputSpecificName(data);
-      renderCartsAll(data);
-      renderCartOneCuntry(data);
-    })
-    .catch(r => {
+    inputSpecificName(data);
+    renderCartsAll(data);
+    renderCartOneCuntry(data);
+  }).catch(r => {
       Notiflix.Notify.failure('Oops, there is no country with that name');
     });
 
@@ -58,13 +50,15 @@ function renderCartsAll(data) {
   }
 }
 
+
+
 function renderCartOneCuntry(data) {
   if (data.length === 1) {
     const markupOneCountry = data
       .map(({ name, flags, capital, population, languages }) => {
-        return `<li class="item"><img class="country" src="${flags.svg}">${
+        return `<li class="item"><img class="country" src="${flags.svg}"><p>${
           name.common
-        }</li>
+        }</p></li>
       <p>Capital: ${capital}</p><p>Population: ${population}</p><p>Languages: ${Object.values(
           languages
         )}</p>`;
